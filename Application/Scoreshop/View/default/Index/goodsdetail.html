@@ -16,8 +16,10 @@
                         <div class="title_content">{:L('_MALL_')}&nbsp;/&nbsp;
                             <a href="{:U('goods',array('category_id'=>$top_category))}">{$category_name}</a>
                             <if condition="$child_category_name neq '' && $child_category_name neq null">
-                                &nbsp;/&nbsp;<a href="{:U('goods',array('category_id'=>$category_id))}">{$child_category_name}</a>
-                            </if>&nbsp;->&nbsp;<a href="{:U('goodsDetail',array('id'=>$content['id']))}">{$content.goods_name}</a>
+                                &nbsp;/&nbsp;
+                                <a href="{:U('goods',array('category_id'=>$category_id))}">{$child_category_name}</a>
+                            </if>&nbsp;->&nbsp;
+                            <a href="{:U('goodsDetail',array('id'=>$content['id']))}">{$content.goods_name}</a>
                         </div>
                         <div class="col-xs-6">
                             <img class="img-responsive" src="{$content.goods_img|getThumbImageById=359,359}"/>
@@ -41,9 +43,16 @@
                             </div>
                             
                             <div class="mb_34">
-                                <a class="btn btn-lg btn-warning scoreshop-btn" data-toggle="modal" data-name="buyModal"
+                                <if condition="is_login()">
+                                    <a class="btn btn-warning scoreshop-btn" data-toggle="modal" data-name="buyModal" 
                                       data-remote="{:U('Scoreshop/index/goodsbuy',array('id'=>$content['id']))}" 
-                                      >{:L('_EXCHANGE_')}</a>
+                                      >{:L('_EXCHANGE_')}
+                                    </a>
+                                  <else />
+                                    <a class="btn btn-lg btn-warning scoreshop-btn" data-login="quick_do_login" data-remote="/ucenter/member/quicklogin.html" data-toggle="modal">
+                                        {:L('_EXCHANGE_')}
+                                    </a>
+                                </if>
                             </div>
                             <div class="time_show">
                                 {:L('_DELIVER_TIME_')}{:L('_COLON_')} {:date('Y-m-d',$content['createtime'])}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
