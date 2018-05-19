@@ -7,8 +7,6 @@
 
 ![输入图片说明](https://gitee.com/uploads/images/2018/0519/100113_dfdc600c_378490.png "5afb73f441000.png")
 
-![输入图片说明](https://gitee.com/uploads/images/2018/0519/100140_3fabfd0a_378490.png "5afb73f441000.png")
-
 ![输入图片说明](https://gitee.com/uploads/images/2018/0519/100227_579a6d7e_378490.png "5afb73f459308.png")
 
 ### 安装流程
