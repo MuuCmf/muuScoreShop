@@ -19,8 +19,8 @@ return array(
     'website' => 'http://www.hoomuu.cn',
     //前台入口，可用U函数
     'entry' => 'Scoreshop/index/index',
-
-    'admin_entry' => 'Admin/Scoreshop/Category',
+    //后台入口，可用U函数
+    'admin_entry' => 'Admin/Scoreshop/verify',
 
     'icon' => 'gift',
 
