@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_scoreshop` (
   `category_id` int(11) NOT NULL,
   `is_new` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否为新品',
   `sell_num` int(11) NOT NULL DEFAULT '0' COMMENT '已出售量',
-  `sku_table` varchar(255) NOT NULL COMMENT '产品sku规格json格式',
+  `sku_table` text NOT NULL COMMENT '产品sku规格json格式',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='商品信息';
 

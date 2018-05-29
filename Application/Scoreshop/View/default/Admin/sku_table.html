@@ -118,7 +118,7 @@
             tableSave = {};
             //初始化
     	    var product = $('#product_sku_table').html();
-                product = JSON.parse(product); 
+                if(product) product = JSON.parse(product); 
             
             if (product) {
 
