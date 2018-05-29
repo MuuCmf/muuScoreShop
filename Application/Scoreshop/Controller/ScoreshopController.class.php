@@ -277,6 +277,23 @@ class ScoreshopController extends AdminController
         }
     }
 
+    public function del_sku_table(){
+
+        if(IS_POST){
+            $product['id'] = I('id',0,'intval');
+            empty($product['id']) && $this->error('缺少商品id');
+
+            $product['sku_table'] = '';
+
+            $res = $this->scoreshopModel->editData($product);
+            if ($res){
+                $this->success(L('_SUCCESS_SETTING_').L('_EXCLAMATION_'));
+            }else{
+                $this->error(L('_ERROR_SETTING_').L('_EXCLAMATION_'));
+            }
+        }
+    }
+
     /**
      * 设置是否为新品
      * @param int $id

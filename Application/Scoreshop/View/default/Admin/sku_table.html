@@ -108,6 +108,7 @@
                 <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
             </div>
     </div>
+    <div id="product_sku_table" class="hidden">{$product.sku_table}</div>
 </block>
 
 <block name="script">
@@ -116,7 +117,9 @@
             //保存数据
             tableSave = {};
             //初始化
-    	    var product = {$product.sku_table};
+    	    var product = $('#product_sku_table').html();
+                product = JSON.parse(product); 
+            
             if (product) {
 
                 //遍历table对象

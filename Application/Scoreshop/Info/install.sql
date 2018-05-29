@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_scoreshop_buy` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL COMMENT '商品id',
   `goods_num` int(11) NOT NULL COMMENT '购买数量',
+  `goods_sku` varchar(255) NOT NULL COMMENT '所选商品规则',
   `status` tinyint(4) NOT NULL COMMENT '状态，-1：已取消；0：未处理；1：已发货；2：已完成',
   `uid` int(11) NOT NULL COMMENT '用户id',
   `createtime` int(11) NOT NULL COMMENT '购买时间',
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_scoreshop_see` (
   `create_time` int(11) NOT NULL,
   `update_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- -----------------------------
 -- 表内记录 `muucmf_scoreshop`
@@ -103,13 +104,6 @@ INSERT INTO `muucmf_scoreshop` VALUES ('5', '汤臣倍健液体钙软胶囊', '6
 INSERT INTO `muucmf_scoreshop` VALUES ('6', '美的电饭煲 MB-FD4019A', '69', '原来生活可以更美的', '<p style=\"text-align: center;\"><img src=\"/Uploads/Editor/Picture/2018-05-14/5af968a79a820.jpg\" title=\"\" alt=\"CsgDV1ogyuSAY-XQAAXhW_CIzMM707.jpg\"/></p>', '23000', '100', '1526294756', '1', '1526294756', '6', '0', '2', '');
 INSERT INTO `muucmf_scoreshop` VALUES ('7', '最生活毛巾浅色系列4条装', '71', '最生活毛巾浅色系列4条装', '<p style=\"text-align: center;\"><img src=\"/Uploads/Editor/Picture/2018-05-14/5af9698c7c723.jpg\" title=\"\" alt=\"CsgDV1noaCyAEjISAAa6nh0ejrk089.jpg\"/><img src=\"/Uploads/Editor/Picture/2018-05-14/5af969f5258f6.jpg\" title=\"\" alt=\"CsgDWFnoaDGAdskwAAcq9ZVxeb0860.jpg\"/></p>', '1200', '198', '1526295045', '1', '1526294971', '6', '0', '12', '');
 INSERT INTO `muucmf_scoreshop` VALUES ('8', '小熊纳豆米酒酸奶机', '74', '小熊纳豆米酒酸奶机', '<p style=\"text-align: center;\"><img src=\"/Uploads/Editor/Picture/2018-05-14/5af8e85c187a0.jpg\" title=\"\" alt=\"CsgDV1noeIeAbyRTAA67MfamXZw469.jpg\"/></p>', '900', '99', '1526296004', '1', '1526296004', '6', '0', '11', '{\"table\":{\"sdf\":[\"s\"],\"dd\":[\"ss\",\"dd\",\"qq\"]},\"info\":{\"sdf:s;dd:ss\":{\"price\":\"900\",\"quantity\":\"0\"},\"sdf:s;dd:dd\":{\"price\":\"900\",\"quantity\":\"0\"},\"sdf:s;dd:qq\":{\"price\":\"900\",\"quantity\":\"0\"}}}');
--- -----------------------------
--- 表内记录 `muucmf_scoreshop_address`
--- -----------------------------
-
--- -----------------------------
--- 表内记录 `muucmf_scoreshop_buy`
--- -----------------------------
 
 -- -----------------------------
 -- 表内记录 `muucmf_scoreshop_category`
@@ -121,8 +115,3 @@ INSERT INTO `muucmf_scoreshop_category` VALUES ('6', '趣味生活', '1526258906
 -- -----------------------------
 -- 表内记录 `muucmf_scoreshop_log`
 -- -----------------------------
-
--- -----------------------------
--- 表内记录 `muucmf_scoreshop_see`
--- -----------------------------
-
