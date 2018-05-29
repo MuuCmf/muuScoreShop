@@ -37,4 +37,15 @@ class ScoreshopModel extends Model{
         }
         return null;
     }
+
+    public function editData($data)
+    {
+        if($data['id']){
+            $res = $this->save($data);
+        }else{
+            $res = $this->add($data);
+        }
+
+        return $res;
+    }
 }

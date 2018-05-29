@@ -227,7 +227,7 @@ class IndexController extends CommonController
                     $this->error('地址未选择');
                 }
                 //判断商品余量
-                if ($num > $goods['goods_num']) {
+                if ($num > $goods['quantity']) {
                     $this->error(L('_ERROR_MARGIN_'));
                 }
 
@@ -235,27 +235,27 @@ class IndexController extends CommonController
                 $ScoreModel = D('Ucenter/Score');
                 $score_type = modC('SCORESHOP_SCORE_TYPE', '1', 'Scoreshop');
                 $money_type = $ScoreModel->getType(array('id' => $score_type));
-                $money_need = $num * $goods['money_need'];
+                $price = $num * $goods['price'];
                 $my_money = D('Member')->where(array('uid' => get_uid()))->field('score' . $score_type)->find();
 
-                if ($money_need > $my_money['score' . $score_type]) {
+                if ($price > $my_money['score' . $score_type]) {
                     $this->error(L('_TOAST_TIP_LACK_') . $money_type['title'] . L('_TOAST_TIP_LACK2_'));
                 }
                 //验证结束
 
                 $data['goods_id'] = $id;
-                $data['goods_num'] = $num;
+                $data['quantity'] = $num;
                 $data['status'] = 0;
                 $data['uid'] = is_login();
                 $data['createtime'] = time();
                 $data['address_id'] = $address_id;
 
-                $ScoreModel->setUserScore(array(is_login()), $money_need, $score_type, 'dec', 'Scoreshop', $id, get_nickname(is_login()) . L('_PRODUCT_BUY_YET_'));
+                $ScoreModel->setUserScore(array(is_login()), $price, $score_type, 'dec', 'Scoreshop', $id, get_nickname(is_login()) . L('_PRODUCT_BUY_YET_'));
 
                 $res = D('ScoreshopBuy')->add($data);
                 if ($res) {
                     //商品数量减少,已售量增加
-                    D('Scoreshop')->where('id=' . $id)->setDec('goods_num', $num);
+                    D('Scoreshop')->where('id=' . $id)->setDec('quantity', $num);
                     D('Scoreshop')->where('id=' . $id)->setInc('sell_num', $num);
                     //发送系统消息
                     $message = $goods['goods_name'] . L('_MESSAGE_BUY_') . L('_PERIOD_');
@@ -278,7 +278,7 @@ class IndexController extends CommonController
 
                     action_log('Scoreshop_goods_buy', 'Scoreshop', $id, is_login());
 
-                    $this->success(L('_SUCCESS_BUY_') . $money_need . $money_type['title'], $_SERVER['HTTP_REFERER']);
+                    $this->success(L('_SUCCESS_BUY_') . $price . $money_type['title'], $_SERVER['HTTP_REFERER']);
                 } else {
                     $this->error(L('_ERROR_BUY_') . L('_EXCLAMATION_'));
                 }

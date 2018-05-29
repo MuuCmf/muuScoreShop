@@ -219,12 +219,62 @@ class ScoreshopController extends AdminController
             $val['is_new'] = ($val['is_new'] == 0) ? L('_YES_') : L('_NOT_');
         }
         unset($val);
-        $builder->buttonNew(U('Scoreshop/goodsEdit'))->buttonDelete(U('setGoodsStatus'))->setStatusUrl(U('setGoodsStatus'));
-        $builder->keyId()->keyText('goods_name', L('_GOODS_NAME_'))->keyText('category', L('_GOODS_CATEGORY_'))->keyText('goods_introduct', L('_GOODS_SLOGAN_'))
-            ->keyText('money_need', L('_GOODS_PRICE_'))->keyText('goods_num', L('_GOODS_MARGIN_'))->keyText('sell_num', L('_GOODS_SOLD_'))->keyLink('is_new', L('_GOODS_NEW_'), 'Scoreshop/setNew?id=###')->keyStatus('status', L('_GOODS_STATUS_'))->keyUpdateTime('changetime')->keyCreateTime('createtime')->keyDoActionEdit('Scoreshop/goodsEdit?id=###');
+
+        $builder
+            ->buttonNew(U('Scoreshop/goodsEdit'))
+            ->buttonDelete(U('setGoodsStatus'))
+            ->setStatusUrl(U('setGoodsStatus'));
+
+        $builder
+            ->keyId()
+            ->keyText('goods_name', L('_GOODS_NAME_'))
+            ->keyText('category', L('_GOODS_CATEGORY_'))
+            ->keyText('goods_introduct', L('_GOODS_SLOGAN_'))
+            ->keyText('price', L('_GOODS_PRICE_'))
+            ->keyText('quantity', L('_GOODS_MARGIN_'))
+            ->keyText('sell_num', L('_GOODS_SOLD_'))
+            ->keyLink('is_new', L('_GOODS_NEW_'), 'Scoreshop/setNew?id=###')
+            ->keyStatus('status', L('_GOODS_STATUS_'))
+            ->keyUpdateTime('changetime')
+            ->keyCreateTime('createtime')
+            ->keyDoActionEdit('Scoreshop/goodsEdit?id=###')
+            ->keyDoAction('Scoreshop/sku_table?id=###','规格');
+
         $builder->data($goodsList);
         $builder->pagination($totalCount, $r);
         $builder->display();
+    }
+
+    public function sku_table(){
+        if(IS_POST){
+            $product['id'] = I('id',0,'intval');
+            empty($product['id']) && $this->error('缺少商品id');
+            $table = I('table','','text');
+            $info = I('info','','text');
+
+            $product['sku_table'] = array('table'=>$table,'info'=>$info);
+            $product['sku_table'] = json_encode($product['sku_table']);
+
+            $res = $this->scoreshopModel->editData($product);
+            if ($res){
+                $this->success(L('_SUCCESS_SETTING_').L('_EXCLAMATION_'));
+            }else{
+                $this->error(L('_ERROR_SETTING_').L('_EXCLAMATION_'));
+            }
+        }else{
+
+            $id = I('id',0,'intval');
+            if(empty($id)){
+                $this->error('请选择一个商品','',2);
+            }
+
+            $res = $this->scoreshopModel->getData($id);
+            $builder=new AdminConfigBuilder();
+            $builder->title('SKU');
+            
+            $this->assign('product', $res);
+            $this->display('Scoreshop@Admin/sku_table');
+        }
     }
 
     /**
@@ -278,8 +328,8 @@ class ScoreshopController extends AdminController
      * @param $goods_img
      * @param $goods_introduct
      * @param $goods_detail
-     * @param $money_need
-     * @param $goods_num
+     * @param $price
+     * @param $quantity
      * @param $status
      * @param $category_id
      * @param $is_new
@@ -297,8 +347,8 @@ class ScoreshopController extends AdminController
             $goods_img = I('goods_img','','text');
             $goods_introduct = I('goods_introduct','','text');
             $goods_detail = I('goods_detail','','html');
-            $money_need = I('money_need',0,'intval');
-            $goods_num = I('goods_num',0,'intval');
+            $price = I('price',0,'intval');
+            $quantity = I('quantity',0,'intval');
             $status = I('status',0,'intval');
             $category_id = I('category_id',0,'intval');
             $is_new = I('is_new',0,'intval');
@@ -317,10 +367,10 @@ class ScoreshopController extends AdminController
                     $goods_introduct = substr($goods_detail, 0, 25);
                 }
             }
-            if (!(is_numeric($money_need) && $money_need >= 0)) {
+            if (!(is_numeric($price) && $price >= 0)) {
                 $this->error(L('_GOODS_INPUT_PRICE_'));
             }
-            if (!(is_numeric($goods_num) && $goods_num >= 0)) {
+            if (!(is_numeric($quantity) && $quantity >= 0)) {
                 $this->error(L('_GOODS_INPUT_COUNT_REMIND_'));
             }
             if (!(is_numeric($sell_num) && $sell_num >= 0)) {
@@ -330,8 +380,8 @@ class ScoreshopController extends AdminController
             $goods['goods_img'] = $goods_img;
             $goods['goods_introduct'] = $goods_introduct;
             $goods['goods_detail'] = $goods_detail;
-            $goods['money_need'] = $money_need;
-            $goods['goods_num'] = $goods_num;
+            $goods['price'] = $price;
+            $goods['quantity'] = $quantity;
             $goods['status'] = $status;
             $goods['category_id'] = $category_id;
             $goods['is_new'] = $is_new;
@@ -364,6 +414,7 @@ class ScoreshopController extends AdminController
             $category_map['status'] = array('egt', 0);
             $goods_category_list = $this->categoryModel->where($category_id)->order('pid desc')->select();
             $options = array_combine(array_column($goods_category_list, 'id'), array_column($goods_category_list, 'title'));
+            //编辑器配置
             $edit_config = "
                 'source',
                 '|',
@@ -393,8 +444,8 @@ class ScoreshopController extends AdminController
                     ->keySelect('category_id',L('_GOODS_CATEGORY_'), '', $options)
                     ->keyText('goods_introduct', L('_GOODS_SLOGAN_'))
                     ->keyEditor('goods_detail', L('_GOODS_DETAIL_'),'',$edit_config,array('width' => '800px', 'height' => '400px'))
-                    ->keyText('money_need', L('_GOODS_PRICE_'))
-                    ->keyText('goods_num', L('_GOODS_MARGIN_'))
+                    ->keyText('price', L('_GOODS_PRICE_'))
+                    ->keyText('quantity', L('_GOODS_MARGIN_'))
                     ->keyText('sell_num', L('_GOODS_SOLD_'))
                     ->keyBool('is_new', L('_GOODS_NEW_'))
                     ->keyStatus('status', L('_GOODS_STATUS_'));

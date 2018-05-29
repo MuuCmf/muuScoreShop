@@ -33,11 +33,11 @@
                             <div class="clearfix mb_34 info_item_s">
                                 <if condition="is_login() neq 0">
                                     <font title="{:L('_MY_')}{$money_type.title}：{$my_money} {$money_type.unit}"><span>{:L('_NEED_')}{$money_type.title}：<aq>
-                                        {$content.money_need} {$money_type.unit}
+                                        {$content.price} {$money_type.unit}
                                     </aq></span>
                                     </font>
                                     <else/>
-                                    <span>{:L('_NEED_')}{$money_type.title}：<aq>{$content.money_need} {$money_type.unit}</aq></span>
+                                    <span>{:L('_NEED_')}{$money_type.title}：<aq>{$content.price} {$money_type.unit}</aq></span>
                                 </if>
                                 <span>{:L('_STOCK_')}{:L('_COLON_')}<aq>{$content.goods_num}</aq></span>
                             </div>
@@ -89,7 +89,7 @@
                                                             title="{$vo.goods_name|op_t}">{$vo.goods_name}</font>
                                                     </h3>
 
-                                                    <div class="money"><font title="{:L('_NEED_')}{$money_name}"><i class="ico_to_money"></i>&nbsp;{$vo.money_need}</font>
+                                                    <div class="money"><font title="{:L('_NEED_')}{$money_name}"><i class="ico_to_money"></i>&nbsp;{$vo.price}</font>
                                                     </div>
                                            </dl>
                                         </li>
@@ -120,7 +120,7 @@
                                                         title="{$vo.goods_name|op_t}">{$vo.goods_name}</font>
                                                 </h3>
 
-                                                <div class="money"><font title="{:L('_NEED_')}{$money_name}"><i class="ico_to_money"></i>&nbsp;{$vo.money_need}</font>
+                                                <div class="money"><font title="{:L('_NEED_')}{$money_name}"><i class="ico_to_money"></i>&nbsp;{$vo.price}</font>
                                                 </div>
                                             </dd>
                                         </dl>
