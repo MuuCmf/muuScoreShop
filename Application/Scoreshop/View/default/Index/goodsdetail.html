@@ -187,5 +187,14 @@
                 sku_data:goods_sku
             });
         });
+
+        $(function(){
+            var buy_url = $('.scoreshop-btn').data('remote');
+            $('.sku-box ul li').click(function(){
+                var v = $('.sku-content input').val();
+                var pam = '?sku='+v;
+                $('.scoreshop-btn').data('remote',buy_url+pam);
+            });
+        });
     </script>
 </block>
