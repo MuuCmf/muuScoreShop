@@ -153,6 +153,32 @@ class IndexController extends CommonController
         if (!$goods) {
             $this->error('404 not found');
         }
+        //商品SKU
+        if($goods['sku_table']){
+            $goods['sku_table'] = json_decode($goods['sku_table'],true);
+            $minPrice= intval($goods['price']);
+            $maxPrice= intval($goods['price']);
+
+            foreach($goods['sku_table']['info'] as $val){
+                if($val['price']==''){
+                    $val['price']= intval($goods['price']);
+                }
+                if($val['price']<=$minPrice){
+                    $minPrice = $val['price'];
+                }
+                if($val['price']>=$maxPrice){
+                    $maxPrice = $val['price'];
+                }
+            }
+            unset($val);
+            if ($minPrice==$maxPrice){
+                $goods['price']=$minPrice;
+                //$goods['price'] = $goods['price'];
+            }else{
+                $goods['price']=$minPrice.'-'.$maxPrice;
+            }
+        }
+        $goods['sku_table_json'] = json_encode($goods['sku_table']);
         //分类信息
         $category = D('scoreshopCategory')->find($goods['category_id']);
 
@@ -166,6 +192,8 @@ class IndexController extends CommonController
             $this->assign('child_category_name', $category['title']);
         }
         $this->assign('content', $goods);
+        //dump($goods);
+
         //同类对比
         $goods_categorys_ids = D('scoreshop_category')->where("id=%d OR pid=%d", array($category['id'], $category['id']))->limit(999)->field('id')->select();
         foreach ($goods_categorys_ids as &$v) {
@@ -176,25 +204,19 @@ class IndexController extends CommonController
         $map['id'] = array('neq', $id);
         $same_category_goods = D('scoreshop')->where($map)->limit(3)->order('sell_num desc')->select();
         $this->assign('contents_same_category', $same_category_goods);
-        //最近浏览
-        if (is_login()) {
-            //关联查询最近浏览
-            $sql = "SELECT a." . $this->goods_info . " FROM `" . C('DB_PREFIX') . "shop` AS a , `" . C('DB_PREFIX') . "shop_see` AS b WHERE ( b.`uid` =" . is_login() . " ) AND ( b.`goods_id` <> '" . $id . "' ) AND ( a.`status` = 1 )AND(a.`id` =b.`goods_id`) ORDER BY b.update_time desc LIMIT 3";
-            $Model = new \Think\Model();
-            $goods_see_list = $Model->query($sql);
-            $this->assign('goods_see_list', $goods_see_list);
-            //添加最近浏览
-            $map_see['uid'] = is_login();
-            $map_see['goods_id'] = $id;
-            $rs = D('ScoreshopSee')->where($map_see)->find();
-            if ($rs) {
-                $data['update_time'] = time();
-                D('ShopSee')->where($map_see)->save($data);
-            } else {
-                $map_see['create_time'] = $map_see['update_time'] = time();
-                D('ScoreshopSee')->add($map_see);
-            }
+
+        //添加最近浏览
+        $map_see['uid'] = is_login();
+        $map_see['goods_id'] = $id;
+        $rs = D('ScoreshopSee')->where($map_see)->find();
+        if ($rs) {
+            $data['update_time'] = time();
+            D('ScoreshopSee')->where($map_see)->save($data);
+        } else {
+            $map_see['create_time'] = $map_see['update_time'] = time();
+            D('ScoreshopSee')->add($map_see);
         }
+
         $this->display();
     }
 
@@ -467,6 +489,19 @@ class IndexController extends CommonController
         $this->display('Scoreshop@Public/logistic');
     }
 
+
+    public function history_view(){
+        //最近浏览
+        if (is_login()) {
+            //关联查询最近浏览
+            $sql = "SELECT a." . $this->goods_info . " FROM `" . C('DB_PREFIX') . "scoreshop` AS a , `" . C('DB_PREFIX') . "scoreshop_see` AS b WHERE ( b.`uid` =" . is_login() . " ) AND ( b.`goods_id` <> '" . $id . "' ) AND ( a.`status` = 1 )AND(a.`id` =b.`goods_id`) ORDER BY b.update_time desc LIMIT 3";
+            $Model = new \Think\Model();
+            $goods_see_list = $Model->query($sql);
+            $this->assign('goods_see_list', $goods_see_list);
+            
+            
+        }
+    }
     private function _needLogin()
     {   
         //调用通用用户授权方法

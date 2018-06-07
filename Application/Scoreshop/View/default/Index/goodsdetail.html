@@ -25,23 +25,58 @@
                             <img class="img-responsive" src="{$content.goods_img|getThumbImageById=359,359}"/>
                         </div>
                         <div class="col-xs-6">
-                            <h3 class="text-more mb_34"><font title="{$content.goods_name|op_t}">{$content.goods_name}</font></h3>
+                            <h3 class="text-more mb_34">
+                                <font title="{$content.goods_name}">{$content.goods_name}</font>
+                            </h3>
                             <div class="text-more mb_34 intro">
-                            <span><font
-                                    title="{$content.goods_introduct}">{$content.goods_introduct}</font></span>
+                            <span>
+                                <font title="{$content.goods_introduct}">
+                                    {$content.goods_introduct}
+                                </font>
+                            </span>
                             </div>
-                            <div class="clearfix mb_34 info_item_s">
+                            <div class="price clearfix mb_34">
                                 <if condition="is_login() neq 0">
-                                    <font title="{:L('_MY_')}{$money_type.title}：{$my_money} {$money_type.unit}"><span>{:L('_NEED_')}{$money_type.title}：<aq>
-                                        {$content.price} {$money_type.unit}
-                                    </aq></span>
+                                    <font title="{:L('_MY_')}{$money_type.title}：{$my_money} {$money_type.unit}">
+                                        <span class="item">{:L('_NEED_')}{$money_type.title}：
+                                            <aq>
+                                                <span class="now-price">{$content.price}</span> {$money_type.unit}
+                                            </aq>
+                                        </span>
                                     </font>
                                     <else/>
-                                    <span>{:L('_NEED_')}{$money_type.title}：<aq>{$content.price} {$money_type.unit}</aq></span>
+                                    <span class="item">{:L('_NEED_')}{$money_type.title}：<aq>{$content.price} {$money_type.unit}</aq></span>
                                 </if>
-                                <span>{:L('_STOCK_')}{:L('_COLON_')}<aq>{$content.goods_num}</aq></span>
+                                <span class="item quantity">{:L('_STOCK_')}{:L('_COLON_')}<aq>{$content.quantity}</aq></span>
                             </div>
                             
+                            <div class="sku_table clearfix">
+                            <php>
+                            /*有规格，在规格里选择数量*/
+                            if(!empty($content['sku_table'])){
+                            </php>
+                                <section class="sku-content" data-id="{$goods.id}">
+                                    <php>
+                                    foreach($content['sku_table']['table'] as $in => $table){
+                                    </php>
+                                        <dl class="sku-box clearfix">
+                                            <dt><php> echo $in </php></dt>
+                                            <dd>
+                                            <ul data-sku="<php> echo $in </php>">
+                                                <php>foreach($table as $t){</php>
+                                                    <li class="" data-table="<php> echo $in </php>" data-value="<php> echo $t </php>"><php> echo $t </php><i></i></li>
+                                                <php>}</php>
+                                            </ul>
+                                            </dd>
+                                        </dl>
+                                    <php>
+                                    }
+                                    </php>
+                                    <input type="hidden" >
+                                </section>
+                            <php>}</php>
+                            </div>
+
                             <div class="mb_34">
                                 <if condition="is_login()">
                                     <a class="btn btn-warning scoreshop-btn" data-toggle="modal" data-name="buyModal" 
@@ -138,7 +173,19 @@
             </div>
         </div>
     </div> 
+<input type="hidden" data-toggle="goods_id" value='{$content.id}' />
+<input type="hidden" data-toggle="goods_sku" value='{$content.sku_table_json}' />
 </block>
 
 <block name="script">
+    <script src="__JS__/sku.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var goods_sku = $('input[data-toggle="goods_sku"]').val();
+            if(goods_sku) goods_sku = $.parseJSON(goods_sku);
+            $('.sku-content').Muusku({
+                sku_data:goods_sku
+            });
+        });
+    </script>
 </block>
