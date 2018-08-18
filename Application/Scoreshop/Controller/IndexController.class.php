@@ -375,7 +375,6 @@ class IndexController extends CommonController
         $list = D('ScoreshopAddress')->where($map)->select();
 
         $this->ajaxReturn($list);
-
     }
 
     public function editAddress(){
